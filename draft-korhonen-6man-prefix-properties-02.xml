@@ -294,7 +294,7 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
     length rules familiar from RFC4861 <xref target="RFC4861"/>. On a particular
     note, the flag 'C' describes whether the suboption is mandatory to
     understand by the receiver or not. If 'C' is set to zero (0), the receiver
-    can silently discard the unknown suboption and skip to the next suboption. 
+    can silently discard an unknown suboption and skip to the next suboption. 
     If 'C' is set to one (1), then an unknown suboption causes the receiver to 
     silently discard the entire PIO with meta data and no further suboptions
     need to be parsed.
@@ -327,7 +327,7 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type=1      |        1      |C|         Reserved1           |
+    |       0       |        1      |C|         Reserved1           |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |        Prefix properties      |           Reserved2           |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -349,7 +349,7 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type=2      |        1      |C|         Reserved1           |
+    |       1       |        1      |C|         Reserved1           |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |         Prefix class          |           Reserved2           |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -357,14 +357,19 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
    </figure>
    </t>
 
-   <t>Future specifications MAY define new suboption. One example could be
-   a suboption to identify the provisioning domain where the configuration
-   information originates.
+   <t>Future specifications MAY define new suboptions. One potential example
+   could be a suboption to identify the provisioning domain where the
+   configuration information originates.
    </t>
    </section>
   </section>
   
   <section title="Host Considerations">
+   <section title="Stateless Address Autoconfiguration Enhancements">
+    <t>This specification extends to the RFC4862 <xref target="RFC4862"/>
+    Stateless Address Autoconfiguration (SLAAC).
+    </t>
+   </section>
    <section title="Internal Data Structures">
     <t>The host internal data structures need to be extended with the 'prefix 
      Property' and the 'prefix Class' information associated to the learned

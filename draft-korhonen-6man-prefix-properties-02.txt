@@ -81,8 +81,9 @@ Table of Contents
      3.1.  Prefix Information Option with Meta Data . . . . . . . . .  4
      3.2.  Meta Data Suboptions . . . . . . . . . . . . . . . . . . .  6
    4.  Host Considerations  . . . . . . . . . . . . . . . . . . . . .  7
-     4.1.  Internal Data Structures . . . . . . . . . . . . . . . . .  7
-     4.2.  Default Address Selection  . . . . . . . . . . . . . . . .  7
+     4.1.  Stateless Address Autoconfiguration Enhancements . . . . .  7
+     4.2.  Internal Data Structures . . . . . . . . . . . . . . . . .  7
+     4.3.  Default Address Selection  . . . . . . . . . . . . . . . .  7
    5.  Security Considerations  . . . . . . . . . . . . . . . . . . .  8
    6.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . .  8
    7.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . .  8
@@ -90,7 +91,6 @@ Table of Contents
      8.1.  Normative References . . . . . . . . . . . . . . . . . . .  9
      8.2.  Informative References . . . . . . . . . . . . . . . . . .  9
    Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 10
-
 
 
 
@@ -294,10 +294,10 @@ Internet-Draft           IPv6 Prefix Properties                June 2013
    familiar from RFC4861 [RFC4861].  On a particular note, the flag 'C'
    describes whether the suboption is mandatory to understand by the
    receiver or not.  If 'C' is set to zero (0), the receiver can
-   silently discard the unknown suboption and skip to the next
-   suboption.  If 'C' is set to one (1), then an unknown suboption
-   causes the receiver to silently discard the entire PIO with meta data
-   and no further suboptions need to be parsed.
+   silently discard an unknown suboption and skip to the next suboption.
+   If 'C' is set to one (1), then an unknown suboption causes the
+   receiver to silently discard the entire PIO with meta data and no
+   further suboptions need to be parsed.
 
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -319,7 +319,7 @@ Internet-Draft           IPv6 Prefix Properties                June 2013
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   Type=1      |        1      |C|         Reserved1           |
+       |       0       |        1      |C|         Reserved1           |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |        Prefix properties      |           Reserved2           |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -344,21 +344,26 @@ Internet-Draft           IPv6 Prefix Properties                June 2013
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   Type=2      |        1      |C|         Reserved1           |
+       |       1       |        1      |C|         Reserved1           |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |         Prefix class          |           Reserved2           |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
                      Figure 4: Prefix Class suboption
 
-   Future specifications MAY define new suboption.  One example could be
-   a suboption to identify the provisioning domain where the
-   configuration information originates.
+   Future specifications MAY define new suboptions.  One potential
+   example could be a suboption to identify the provisioning domain
+   where the configuration information originates.
 
 
 4.  Host Considerations
 
-4.1.  Internal Data Structures
+4.1.  Stateless Address Autoconfiguration Enhancements
+
+   This specification extends to the RFC4862 [RFC4862] Stateless Address
+   Autoconfiguration (SLAAC).
+
+4.2.  Internal Data Structures
 
    The host internal data structures need to be extended with the
    'prefix Property' and the 'prefix Class' information associated to
@@ -373,18 +378,13 @@ Internet-Draft           IPv6 Prefix Properties                June 2013
       [Editor's note: The SLAAC procedure using the CPIO and the 'Class'
       meta data to be described in more detail.]
 
-4.2.  Default Address Selection
+4.3.  Default Address Selection
 
    The 'prefix Property' is only used as a hint.  They do not affect the
    existing [RFC6724] automatically.  A specific rule to host's policy
    table has to be inserted by an application or some daemon process.
    Alternatively, an application can express its address mobility
    property preferences through the socket API extensions (see
-   discussion in [I-D.liu-dmm-mobility-api]), which means the socket
-   library or middleware has to modify [RFC6724] policy table or
-   algorithm.
-
-   The 'prefix Properties' flags MAY define the prefix preference for an
 
 
 
@@ -393,6 +393,11 @@ Korhonen, et al.        Expires December 22, 2013               [Page 7]
 Internet-Draft           IPv6 Prefix Properties                June 2013
 
 
+   discussion in [I-D.liu-dmm-mobility-api]), which means the socket
+   library or middleware has to modify [RFC6724] policy table or
+   algorithm.
+
+   The 'prefix Properties' flags MAY define the prefix preference for an
    IP stack that understands the extensions defined in this
    specification.  The IP stack SHOULD use the Properties preferences to
    supersede [RFC6724] Source Address Selection Rule 8 when selecting a
@@ -438,16 +443,13 @@ Internet-Draft           IPv6 Prefix Properties                June 2013
    document (the Classed PIO).
 
 
-8.  References
-
-
-
-
 
 Korhonen, et al.        Expires December 22, 2013               [Page 8]
 
 Internet-Draft           IPv6 Prefix Properties                June 2013
 
+
+8.  References
 
 8.1.  Normative References
 
@@ -495,8 +497,6 @@ Internet-Draft           IPv6 Prefix Properties                June 2013
               "Linux Netlink as an IP Services Protocol", RFC 3549,
               July 2003.
 
-   [RFC3971]  Arkko, J., Kempf, J., Zill, B., and P. Nikander, "SEcure
-              Neighbor Discovery (SEND)", RFC 3971, March 2005.
 
 
 
@@ -504,6 +504,9 @@ Korhonen, et al.        Expires December 22, 2013               [Page 9]
 
 Internet-Draft           IPv6 Prefix Properties                June 2013
 
+
+   [RFC3971]  Arkko, J., Kempf, J., Zill, B., and P. Nikander, "SEcure
+              Neighbor Discovery (SEND)", RFC 3971, March 2005.
 
    [RFC4191]  Draves, R. and D. Thaler, "Default Router Preferences and
               More-Specific Routes", RFC 4191, November 2005.
@@ -549,9 +552,6 @@ Authors' Addresses
    USA
 
    Email: sgundave@cisco.com
-
-
-
 
 
 

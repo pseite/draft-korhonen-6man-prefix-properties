@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com)
+     by Daniel M Kohn (private) -->
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+    <!ENTITY RFC2119 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml'>
+    <!ENTITY RFC3493 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3493.xml'>
+    <!ENTITY RFC4861 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.4861.xml'>
+    <!ENTITY RFC4862 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.4862.xml'>
+    <!ENTITY RFC3484 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3484.xml'>
+    <!ENTITY RFC5014 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.5014.xml'>
+    <!ENTITY RFC6059 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.6059.xml'>
+    <!ENTITY RFC6275 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.6275.xml'>
+    <!ENTITY RFC3971 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3971.xml'>
+    <!ENTITY RFC4191 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.4191.xml'>
+    <!ENTITY RFC3549 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3549.xml'>
+    <!ENTITY RFC5213 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.5213.xml'>
+    <!ENTITY RFC5226 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.5226.xml'>
+    <!ENTITY RFC6724 PUBLIC '' 
+      'http://xml.resource.org/public/rfc/bibxml/reference.RFC.6724.xml'>
+
+    <!ENTITY API PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.liu-dmm-mobility-api.xml'>
+    <!ENTITY CLASS PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.bhandari-dhc-class-based-prefix.xml'>
+]>
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+
+
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="yes"?>
+<?rfc iprnotified="no" ?>
+<?rfc strict="yes" ?>
+<?rfc autobreaks="yes" ?>
+
+<rfc category="std" ipr="trust200902" 
+updates="4861, 4862"
+docName="draft-korhonen-6man-prefix-properties-02.txt">
+ <front>
+  <title abbrev="IPv6 Prefix Properties">IPv6 Prefix Properties</title>
+  <author initials='J.' surname="Korhonen" fullname='Jouni Korhonen'>
+   <organization abbrev="Renesas Mobile">Renesas Mobile</organization>
+   <address>
+    <postal>
+     <street>Porkkalankatu 24</street>
+     <code>FIN-00180 Helsinki</code>
+     <country>Finland</country>
+    </postal>
+    <email>jouni.nospam@gmail.com</email>
+   </address>
+  </author>
+
+  <author initials="B" surname="Patil" fullname="Basavaraj Patil">
+   <organization>Cisco</organization>
+   <address>
+    <email>bpatil1@gmail.com</email>
+   </address>
+  </author>
+  <author fullname="Sri Gundavelli" initials="S" surname="Gundavelli">
+   <organization abbrev="">Cisco</organization>
+   <address>
+    <postal>
+     <street>170 West Tasman Drive</street>
+     <city>San Jose</city>
+     <region>CA</region>
+     <code>95134</code>
+     <country>USA</country>
+    </postal>
+    <email>sgundave@cisco.com</email>
+   </address>
+  </author>
+
+  <author fullname="Pierrick Seite" initials="P." surname="Seite">
+   <organization>France Telecom - Orange</organization>
+   <address>
+    <postal>
+     <street>4, rue du Clos Courtel, BP 91226</street>
+     <city>Cesson-Sevigne</city>
+     <code>35512</code>
+     <country>France</country>
+    </postal>
+    <email>pierrick.seite@orange.com</email>
+   </address>
+  </author>
+
+  <author fullname="Dapeng Liu" initials="D." surname="Liu">
+   <organization>China Mobile</organization>
+   <address>
+    <postal>
+     <street>32 Xuanwumen West Street</street>
+     <city>Beijng, Xicheng District</city>
+     <code>100053</code>
+     <country>China</country>
+    </postal>
+    <email>liudapeng@chinamobile.com</email>
+   </address>
+  </author>
+
+  <date year="2013"/>
+  <area>Internet</area>
+  <workgroup>Distributed Mobility Management (DMM)</workgroup>
+  
+  <abstract>
+   <t>This specification defines an extension to the IPv6 Neighbor
+    Discovery protocol and the stateless address autoconfiguration procedure.
+    A new Prefix Information Option with meta data is defined that describe the
+    properties and other prefix class meta data associated with the prefix. The 
+    stateless address autoconfiguration procedure and end hosts can
+    make use of the additional properties and class information when selecting
+    prefixes for a particular uses and use cases. This specification updates 
+    RFC4861 and RFC4862.
+   </t>
+  </abstract>
+
+  <note title="Requirements Language">
+   <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in <xref
+   target="RFC2119">RFC 2119</xref>.</t>
+  </note>
+ </front>
+
+ <middle>
+  <section title="Introduction">
+   <t>This specification defines an extension to the IPv6 Neighbor
+   Discovery protocol and its Prefix Information Option (PIO) <xref     
+   target="RFC4861"/>. The Prefix Information Option is extended with flag bits
+   that
+   describe, for example, the mobility management properties associated
+   to the prefix, and a class value that conveys metadata associated to
+   the prefix with local administrative domain wide importance.
+   Furthermore, the specification discusses corresponding source address
+   selection hint flags to the IPv6 Socket API for Source Address
+   Selection <xref target="RFC5014"/>.
+   </t>
+   <t>For example, the IPv6 Socket API for Source Address Selection <xref target="RFC5014"/>
+   already covers Mobile IPv6 <xref target="RFC6275"/> and allows selecting between a
+   home address (HoA) and a care-of address (CoA).  A mobile node (MN)
+   with a client based mobility IP stack is supposed to know which
+   prefixes are CoA(s) and/or HoA(s).  However, this is not the case with
+   network based mobility management where the MN is expected to be
+   agnostic of the mobility support. There has been attemps in past to define similar
+   functionality for the mobility protocols purposes <xref target="I-D.damic-6man-pmip6-ind"/>.
+    Outside the mobility protocols,
+   there are other potential use cases where associating properties to
+   the advertised prefixes could be useful as discussed in 
+   <xref target="I-D.bhandari-dhc-class-based-prefix"/>.
+   </t>
+   <t>The extensions to  <xref target="RFC4861"/> are minimal in a sense that
+    they do not define new functionality to, for example, any existing mobility
+    protocol but
+    instead add an explicit indication of network based mobility knowledge into
+    the IPv6 stateless address autoconfiguration (SLAAC). 
+   </t>
+   <t>This  would allow for network based mobility solutions, such as Proxy 
+    Mobile IPv6 <xref target="RFC5213"/> or GTP <xref target="TS.29274"/> to 
+    explicitly indicate that their prefixes have mobility, and therefore, the MN 
+    IP stack can make an educated selection between prefixes that have mobility 
+    and those that do not. There is also a potential need to extend both <xref 
+    target="RFC3493"/> and <xref target="RFC5014"/> in order to provide required 
+    hooks into socket APIs. 
+   </t>
+   <t>The underlying assumption is that a MN has multiple prefixes to
+   choose from.  Typically this means either the MN has multiple
+   interfaces or an interface has been configured with multiple
+   prefixes.  This specification does not make a distinction between
+   these alternatives and does not either make any assumptions how the
+   possible transfer of a prefix is done between interfaces in the case
+   a network based mobility solution is used.
+   </t>
+  </section>
+  
+  <section title="Background and Motivation">
+  <t> This section discusses the motivations behind adding metadata and
+  other address selection decision making affecting information into
+  IPv6 prefixes. The additional information is convey from the network
+  to a end host during the IPv6 address configuration phase. The motivation
+  example taken from and discussed below is from the mobile networks.
+  </t>
+   <t>IP mobility and its centralized topological anchoring of IP addresses
+    has known issues. For instance, non-optimal routing is a classical example.
+    Another concerns include excessive tunneling, increased signaling due the
+    maintenance of mobility related bindings, aggregation of traffic to centralized
+    mobility anchor gateways and unnecessary IP mobility related state management
+    for IP traffic that does not as such benefit from mobility. In general, it is
+    observed that most applications do not need IP level mobility, and work just
+    fine with "temporary" IP addresses that come and go. However, IP mobility still
+    has its virtues making the applications unaware of mobility, and certain wireless
+    mobile networking architecture make extensive use of network based IP mobility.
+   </t>
+   <t>In order to overcome some of the above issues, use of local resources and
+    topologically local addressing could be enhanced. In many cases this would
+    lead to use of multiple addresses of which some provide mobility and some do
+    not. However, an end host has to have means to distinguish between addresses
+    that provide mobility, and those that are short lived and usable only within
+    a limited topological area. This specification provides extensions to IPv6
+    address management and source address selection so that end hosts (and their
+    applications) can select a proper address for their needs.
+   </t>
+   <t>This specification also shares similar motivations for classifying the 
+    prefix properties as described in <xref target="I-D.bhandari-dhc-class-based-prefix"/>.
+    This specification complements
+    <xref target="I-D.bhandari-dhc-class-based-prefix"/> by providing the
+    SLAAC version of the additional prefix related information delivery 
+    compared to the DHCPv6 stateful approach.
+   </t>
+  </section>
+
+  <section title="Option Formats" anchor="options">
+   <section title="Prefix Information Option with Meta Data" anchor="piomt">
+  
+   <t>This specification defines a new neighbor discovery protocol 
+    message option, the Prefix Information Option with Meta Data (PIOMT), to be
+    used in router advertisement messages. The PIOMT is treated exactly the
+    same as RFC4861 <xref target="RFC4861"/> Prefix Information Option (PIO)
+    except with an addition of new meta data suboptions.
+   </t>
+   <t>The PIOMT can coexist with RFC4861 PIO. The prefixes advertised in 
+   both PIOMT and PIO can even be the same. It is up to the receiving end
+   host to select the appropriate prefix(es) for configuring its IPv6
+   addresses. In a case the PIO and the PIOMT share the same prefix, then
+   all the other parameter (like flags and lifetimes) MUST be the same.
+
+   <figure title="Prefix Information Option with additional meta data" anchor="fig_piomt">
+<artwork><![CDATA[
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |      Type     |    Length     | Prefix Length |L|A| Reserved1 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                         Valid Lifetime                        |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                       Preferred Lifetime                      |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                            Reserved2                          |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +                                                               +
+    |                                                               |
+    +                            Prefix                             +
+    |                                                               |
+    +                                                               +
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    :                          Suboptions                           :
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+   </figure>
+   </t>
+
+   <t><list style="hanging" hangIndent="4">
+    <t hangText="Type"><vspace blankLines="1"/>
+     Set to TBD1.
+    </t>
+
+    <t hangText="Length"><vspace blankLines="1"/>
+     4 if no suboptions are present. Greater than 4 if one or more suboptions
+     ar present.
+    </t>
+
+    <t hangText="Suboptions"><vspace blankLines="1"/>
+     Zero or more suboptions that describe properties and other meta data
+     attached to the advertised prefix. See <xref target="suboptions"/> for
+     description of the meta data suboption format and suboptions already
+     defined in this specification. The existence of suboptions can be 
+     determined from the length field. If the length is greater than 4, then
+     at least one suboption is present.
+    </t>
+    </list>
+   </t> 
+   <t>Rest of the fields are handled exactly as described in Section 4.6.2. of
+    RFC4861 <xref target="RFC4861"/>.
+   </t>
+  </section>
+  <section title="Meta Data Suboptions" anchor="suboptions">
+   <t>The generic suboption format for the PIO with meta data is shown in
+    <xref target="mt_generic"/>.  The suboption follows the alignment and
+    length rules familiar from RFC4861 <xref target="RFC4861"/>. On a particular
+    note, the flag 'C' describes whether the suboption is mandatory to
+    understand by the receiver or not. If 'C' is set to zero (0), the receiver
+    can silently discard the unknown suboption and skip to the next suboption. 
+    If 'C' is set to one (1), then an unknown suboption causes the receiver to 
+    silently discard the entire PIO with meta data and no further suboptions
+    need to be parsed.
+
+   <figure title="Generic meta data suboption format" anchor="mt_generic">
+<artwork><![CDATA[
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |     Type      |    Length     |C|          Reserved           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                              ...                              ~
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+   </figure>
+   </t>
+
+
+   <!-- ============================================= -->
+   <t><xref target="mt_properties"/> shows the Prefix Properties suboption.
+   The prefix properties values are defined in Section 6.1. of 
+   <xref target="I-D.bhandari-dhc-class-based-prefix"/>. When an end host
+   receives a router advertisement message with a PIOMT and the prefix 
+   properties suboption, it can use the suboption information as an additional
+   hint for selecting the prefix for a desired purpose and use case.
+
+
+   <figure title="Prefix Properties suboption" anchor="mt_properties">
+<artwork><![CDATA[
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |   Type=1      |        1      |C|         Reserved1           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |        Prefix properties      |           Reserved2           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+   </figure>
+   </t>
+
+   <!-- ============================================= -->
+
+   <t><xref target="mt_class"/> shows the Prefix Class suboption.
+   The prefix class values and usage follow what has been defined in Section 
+   2.3. of <xref target="I-D.bhandari-dhc-class-based-prefix"/>. When an end 
+   host receives a router advertisement message with a PIOMT and the prefix 
+   class suboption, it can use the suboption information as an additional
+   hint for selecting the prefix for a desired purpose and use case.
+ 
+   <figure title="Prefix Class suboption" anchor="mt_class">
+<artwork><![CDATA[
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |   Type=2      |        1      |C|         Reserved1           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |         Prefix class          |           Reserved2           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+   </figure>
+   </t>
+
+   <t>Future specifications MAY define new suboption. One example could be
+   a suboption to identify the provisioning domain where the configuration
+   information originates.
+   </t>
+   </section>
+  </section>
+  
+  <section title="Host Considerations">
+   <section title="Internal Data Structures">
+    <t>The host internal data structures need to be extended with the 'prefix 
+     Property' and the 'prefix Class' information associated to the learned
+     prefix and configured 
+     addresses. How this is accomplished is host implementation specific. It is 
+     also a host implementation issue how an application can learn or query
+     both Properties or Class of an address or a prefix. One possibility is to 
+     provide such information through the socket API extensions (see discussion 
+     in <xref target="I-D.liu-dmm-mobility-api"/>). Other possibilities include 
+     the use of e.g., ioctl() or NetLink <xref target="RFC3549"/> extensions.
+    </t>
+    <t><list>
+      <t>[Editor's note: The SLAAC procedure using the CPIO and the 'Class'
+      meta data to be described in more detail.]</t>
+    </list></t>
+   </section>
+
+   <section title="Default Address Selection">
+    <t>The 'prefix Property' is only used as
+    a hint.  They do not affect the existing <xref target="RFC6724"/> 
+    automatically. A specific rule
+     to host's policy table has to be inserted by 
+    an application or some daemon process. Alternatively, an application can 
+    express its address mobility property preferences through the socket API 
+    extensions (see discussion in <xref target="I-D.liu-dmm-mobility-api"/>), 
+    which means the socket library or middleware has to modify <xref 
+    target="RFC6724"/> policy table or algorithm.
+    </t>
+   <t>The 'prefix Properties' flags MAY define the prefix preference for an IP
+    stack that  understands the extensions defined in this specification. The IP
+    stack  SHOULD use the Properties preferences to supersede <xref 
+    target="RFC6724"/> Source Address Selection Rule 8 when 
+    selecting a default source address among multiple choices and an application 
+    has not explicitly indicate what kind of source address it prefers.
+   </t>
+    <t><list>
+      <t>[Editor's note: Describe the 'prefix Class' usage when doing address
+      selection and how applications can make use of it.]</t>
+    </list></t>
+   </section>
+
+
+
+  </section>
+
+  <section title="Security Considerations">
+   <t>Existing Prefix Information Option related security considerations
+   apply as described in <xref target="RFC4861"/> and <xref target="RFC4191"/>.
+   A malicious node on the shared link could include such 'mobility property' flags in a Prefix Information Option causing the host to learn wrong information regarding the prefix and thus make misguided selection of prefixes on the link. Similarly a malicious middleman on the link could modify 'mobility property' flags in a Prefix Information Option causing misguided selection of prefixes. In order to avoid on-link attacks, SeND <xref target="RFC3971"/> can be used to reject Router Advertisements from potentially malicious nodes and guarantee integrity protection of the Router Advertisements.   
+   </t>
+  </section>
+        
+  <section title="IANA Considerations">
+   <t><xref target="piomt"/> defines a new IPv6 Neighbor
+   Discovery protocol option type TBD1 for the Prefix Information Option with
+   Meta Data. The type value is defined in the existing 'IPv6 Neighbor Discovery
+   Option Formats' IANA registry.
+   </t>
+   <t><xref target="suboptions"/> defines a new IANA registry for the Prefix 
+   Information Option with Meta Data suboptions. The registry allocation policy
+   is Standards Action <xref target="RFC5226"/>. The initial allocations are
+   for the prefix properties and prefix class suboptions are listed in
+   <xref target="suboptions"/>.
+   </t>
+  </section>
+        
+  <section title="Acknowledgements">
+   <t>The authors thank Ole Troan for his feedback and suggestions on this
+      document (the Classed PIO).
+   </t>
+  </section>
+ </middle>
+
+ <back>
+  <references title="Normative References">
+   &RFC2119;
+   &RFC4861;
+   &RFC4862;
+   &RFC6724;
+   &RFC5226;
+  </references>
+  <references title="Informative References">
+   &RFC5014;
+   &RFC3493;
+   &RFC6275;
+   &RFC4191;
+   &RFC3971;
+   &RFC5213;
+   &RFC3549;
+   &API;
+   &CLASS;
+
+   <reference anchor='TS.29274'> 
+      <front> 
+       <title>3GPP Evolved Packet System (EPS); 
+		 	  Evolved General Packet Radio Service (GPRS) 
+		 	 Tunnelling Protocol for Control plane (GTPv2-C)
+       </title> 
+      <author><organization>3GPP</organization></author> 
+      <date day='22' month='December' year='2010' /> 
+      </front> 
+ 
+      <seriesInfo name='3GPP TS' value='29.060 8.11.0' /> 
+      <format type='HTML' target='http://www.3gpp.org/ftp/Specs/html-info/29060.htm' /> 
+   </reference> 
+
+   <reference anchor='I-D.damic-6man-pmip6-ind'> 
+    <front>
+     <title>Proxy Mobile IPv6 indication and discovery</title>
+     <author initials="D" surname="Damic" fullname="Damjam Damic">
+      <organization/>
+     </author>
+     <date month="March" year="2009"/>
+    </front>
+    <seriesInfo name="Internet-Draft" value="draft-damic-6man-pmip6-ind-00"/>
+    <format type="TXT" target="http://tools.ietf.org/html/draft-damic-6man-pmip6-ind-00"/>
+   </reference>
+  </references>
+ </back>
+</rfc>
+

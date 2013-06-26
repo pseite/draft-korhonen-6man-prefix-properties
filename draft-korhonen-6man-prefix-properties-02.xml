@@ -87,7 +87,7 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
   </author>
 
   <author fullname="Pierrick Seite" initials="P." surname="Seite">
-   <organization>France Telecom - Orange</organization>
+   <organization>Orange</organization>
    <address>
     <postal>
      <street>4, rue du Clos Courtel, BP 91226</street>
@@ -138,11 +138,9 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
 
  <middle>
   <section title="Introduction">
-   <t>This specification defines an extension to the IPv6 Neighbor
-   Discovery protocol and its Prefix Information Option (PIO) <xref     
-   target="RFC4861"/>. The Prefix Information Option is extended with flag bits
-   that
-   describe, for example, the mobility management properties associated
+   <t>This specification defines a new neighbor discovery protocol message option, 
+   the Prefix Information Option with Meta Data (PIOMT), 
+   that indicate, for example, the mobility management properties associated
    to the prefix, and a class value that conveys metadata associated to
    the prefix with local administrative domain wide importance.
    Furthermore, the specification discusses corresponding source address
@@ -209,13 +207,16 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
     lead to use of multiple addresses of which some provide mobility and some do
     not. However, an end host has to have means to distinguish between addresses
     that provide mobility, and those that are short lived and usable only within
-    a limited topological area. This specification provides extensions to IPv6
-    address management and source address selection so that end hosts (and their
-    applications) can select a proper address for their needs.
+    a limited topological area. 
    </t>
    <t>This specification also shares similar motivations for classifying the 
-    prefix properties as described in <xref target="I-D.bhandari-dhc-class-based-prefix"/>.
-    This specification complements
+    prefix as described in <xref target="I-D.bhandari-dhc-class-based-prefix"/>.
+    Some service providers may wish to allocate specifific prefixes for some services or type of traffic traffic.
+    In this situation, the end host must be able to classify prefixes according to type of service.
+    </t>
+    <t>This specification provides extensions to IPv6
+    address management and source address selection so that end hosts (and their
+    applications) can select a proper address for their needs. This specification complements
     <xref target="I-D.bhandari-dhc-class-based-prefix"/> by providing the
     SLAAC version of the additional prefix related information delivery 
     compared to the DHCPv6 stateful approach.
@@ -280,7 +281,7 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
      description of the meta data suboption format and suboptions already
      defined in this specification. The existence of suboptions can be 
      determined from the length field. If the length is greater than 4, then
-     at least one suboption is present.
+     at least one suboption must be present.
     </t>
     </list>
    </t> 
@@ -289,7 +290,7 @@ docName="draft-korhonen-6man-prefix-properties-02.txt">
    </t>
   </section>
   <section title="Meta Data Suboptions" anchor="suboptions">
-   <t>The generic suboption format for the PIO with meta data is shown in
+   <t>The generic suboption format for the PIO with meta data (PIOMT) is shown in
     <xref target="mt_generic"/>.  The suboption follows the alignment and
     length rules familiar from RFC4861 <xref target="RFC4861"/>. On a particular
     note, the flag 'C' describes whether the suboption is mandatory to
